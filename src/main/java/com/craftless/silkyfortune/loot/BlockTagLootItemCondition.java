@@ -1,10 +1,15 @@
 package com.craftless.silkyfortune.loot;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -18,11 +23,9 @@ import java.util.Set;
 
 public class BlockTagLootItemCondition implements LootItemCondition {
 
-    public static final Codec<BlockTagLootItemCondition> CODEC = RecordCodecBuilder.create(inst -> inst.group(Codec.STRING.fieldOf("tags").forGetter(m -> m.blockTag)).apply(inst, BlockTagLootItemCondition::new));
+    final TagKey<Block> blockTag;
 
-    private final String blockTag;
-
-    public BlockTagLootItemCondition(String blockTag) {
+    public BlockTagLootItemCondition(TagKey<Block> blockTag) {
         this.blockTag = blockTag;
     }
 
@@ -36,10 +39,18 @@ public class BlockTagLootItemCondition implements LootItemCondition {
 
     public boolean test(LootContext p_81772_) {
         BlockState blockstate = p_81772_.getParamOrNull(LootContextParams.BLOCK_STATE);
-        return blockstate != null && blockstate.is(TagKey.create(ForgeRegistries.BLOCKS.getRegistryKey(), new ResourceLocation(this.blockTag)));
+        return blockstate != null && blockstate.is(this.blockTag);
     }
 
-    public static LootItemCondition.Builder getBuilder(TagKey<Block> blockTag) {
-        return () -> new BlockTagLootItemCondition(blockTag.location().toString());
+    public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<BlockTagLootItemCondition> {
+        public void serialize(JsonObject p_81795_, BlockTagLootItemCondition p_81796_, JsonSerializationContext p_81797_) {
+            p_81795_.addProperty("blocktag", p_81796_.blockTag.location().toString());
+        }
+
+        public BlockTagLootItemCondition deserialize(JsonObject p_81805_, JsonDeserializationContext p_81806_) {
+            ResourceLocation resourcelocation = new ResourceLocation(GsonHelper.getAsString(p_81805_, "blocktag"));
+            TagKey<Block> blockTag = TagKey.create(ForgeRegistries.BLOCKS.getRegistryKey(), resourcelocation);
+            return new BlockTagLootItemCondition(blockTag);
+        }
     }
 }

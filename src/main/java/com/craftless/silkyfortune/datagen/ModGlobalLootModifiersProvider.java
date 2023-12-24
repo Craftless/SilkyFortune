@@ -22,7 +22,7 @@ public class ModGlobalLootModifiersProvider extends GlobalLootModifierProvider {
     protected void start() {
         add("silky_fortune", new SilkyFortuneModifier(new LootItemCondition[]{
                 MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))).hasEnchantment(new EnchantmentPredicate(Enchantments.BLOCK_FORTUNE, MinMaxBounds.Ints.atLeast(1)))).build(),
-                BlockTagLootItemCondition.getBuilder(Tags.Blocks.ORES).build()
+                new BlockTagLootItemCondition(Tags.Blocks.ORES)
         }));
     }
 }

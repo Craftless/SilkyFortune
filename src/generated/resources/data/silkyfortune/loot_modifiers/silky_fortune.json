@@ -21,8 +21,8 @@
       }
     },
     {
-      "condition": "silkyfortune:blocktag",
-      "tags": "forge:ores"
+      "blocktag": "forge:ores",
+      "condition": "silkyfortune:blocktag"
     }
   ]
 }
