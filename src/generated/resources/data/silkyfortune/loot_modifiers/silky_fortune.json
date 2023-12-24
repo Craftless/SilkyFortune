@@ -1,0 +1,28 @@
+{
+  "type": "silkyfortune:silky_fortune",
+  "conditions": [
+    {
+      "condition": "minecraft:match_tool",
+      "predicate": {
+        "enchantments": [
+          {
+            "enchantment": "minecraft:silk_touch",
+            "levels": {
+              "min": 1
+            }
+          },
+          {
+            "enchantment": "minecraft:fortune",
+            "levels": {
+              "min": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "silkyfortune:blocktag",
+      "tags": "forge:ores"
+    }
+  ]
+}
